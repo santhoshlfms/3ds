@@ -19,6 +19,11 @@ router.get('/success', function(req, res, next) {
   res.render('success', { title: 'Express' });
 });
 
+router.get('/usview', function(req, res, next) {
+  res.render('indexus', { title: 'Express' });
+});
+
+
 router.post('/create-payments', function(req, res, next) {
   let amount = 10.00;
   getAccessToken(function(tokenResp){
