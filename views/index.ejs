@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensures optimal rendering on mobile devices. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- Optimal Internet Explorer compatibility -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://www.paypal.com/sdk/js?client-id=AU38yVtT7uX_FPZgOvWXdIIewAFGP_K2DSvi6cfjyyg3pxgjKMGFABRX5bKSxV_FJbDcNG4XCFcyQimX" ></script> 
+
+  </head>
+  <body>
+    <div id="paypal-button-container"></div>
+    <script>
+      paypal
+      .Buttons({
+        // Specify the style of the button
+        style: {
+          layout: "vertical",
+          shape: "rect", // pill | rect
+          color: "gold", // gold | blue | silve | black
+          label: "pay" // checkout | pay | paypal
+        },
+        createOrder: function(data, actions) {
+          console.log("Creating Order");
+          return fetch("/create-payments", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+             
+            })
+          })
+          .then(res => res.json())
+          .then(res => {
+            res = JSON.parse(res);
+            if(!res.id)
+              console.log(JSON.stringify(res, null, 4));
+            else
+              console.log("Order Id : "+ res.id)
+            return res.id;
+          })
+         
+        },
+        onApprove: function(data, actions) {
+          // Get the transaction details
+          return fetch("/capture-order?orderId="+data.orderID,{
+            method: 'POST',
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+            
+            })
+          })
+          .then(res => res.json())
+          .then(res => {
+              if(!res.id) {
+                  console.log(JSON.stringify(res,null,4));
+              }
+              
+              console.log("Payment Successful")
+              alert("Payment Successful")
+              //return res;
+          })
+        
+        },
+        onCancel : function(err) {
+          console.log("You cancelled the operation","error");
+          return  alert("You cancelled the operation");
+        },
+        onError: function(err) {
+          console.log("Some error occurred " + err);
+          console.log("ERROR - "+err.message,"error");
+          alert(
+            "Some Error Occurred . Please open console to see the error " +
+              JSON.stringify(err)
+          );
+        },
+        onInit: function(data, actions) {
+          console.log("PayPal Button Loaded");  
+        }
+      })
+      .render("#paypal-button-container")
+      .catch(err => {
+        console.log("errrrrror ", err);
+     })
+
+    </script>
+  </body>
+</html>
