@@ -15,6 +15,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/success', function(req, res, next) {
+  res.render('success', { title: 'Express' });
+});
+
 router.post('/create-payments', function(req, res, next) {
   let amount = 10.00;
   getAccessToken(function(tokenResp){

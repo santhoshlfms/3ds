@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- Optimal Internet Explorer compatibility -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/jquery.toast.min.css' />
     <script src="https://www.paypal.com/sdk/js?client-id=AU38yVtT7uX_FPZgOvWXdIIewAFGP_K2DSvi6cfjyyg3pxgjKMGFABRX5bKSxV_FJbDcNG4XCFcyQimX" ></script> 
-
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="/javascripts/jquery.toast.min.js"></script>
   </head>
   <body>
     <div id="paypal-button-container"></div>
@@ -61,9 +63,21 @@
               if(!res.id) {
                   console.log(JSON.stringify(res,null,4));
               }
-              
+              let respFromServer = JSON.parse(res);
+              console.log(respFromServer)
               console.log("Payment Successful")
-              alert("Payment Successful")
+              if(respFromServer.status == "COMPLETED") {
+                $.toast({
+                  heading: 'Success',
+                  text: 'Payment Succecssful',
+                  showHideTransition: 'slide',
+                  icon: 'success'
+                })
+                setTimeout(function(){document.location.href = "/success"},500);
+              }else {
+
+              }
+            
               //return res;
           })
         
