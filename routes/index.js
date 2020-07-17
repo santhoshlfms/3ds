@@ -23,6 +23,10 @@ router.get('/usview', function(req, res, next) {
   res.render('indexus', { title: 'Express' });
 });
 
+router.get('/cards', function(req, res, next) {
+  res.render('credit_cards', { title: 'Express' });
+});
+
 
 router.post('/create-payments', function(req, res, next) {
   let amount = 10.00;
@@ -96,35 +100,13 @@ function createPaymentPayload(amount) {
     "intent":"CAPTURE",
     "purchase_units":[
        {
-          "reference_id":"sellerindia1@pp.com.com1_test_07062020",
+         
           "amount":{
              "currency_code":"USD",
              "value":amount
-          },
-          "shipping":{
-             "address":{
-                "shipping_name":"Singpr William Woodbridge",
-                "phone":"5104519373",
-                "address_line_1":"4612  Thompson Drive",
-                "address_line_2":"#100",
-                "admin_area_2":"California",
-                "admin_area_1":"T nagar",
-                "postal_code":"94612",
-                "country_code":"US"
-             },
-             "method":"USPS"
           }
        }
-    ],
-    "application_context":{
-       "brand_name":"PRIXSOFT",
-       "locale":"en-US",
-       "landing_page":"LOGIN",
-       "shipping_preference":"SET_PROVIDED_ADDRESS",
-       "user_action":"PAY_NOW",
-       "return_url":"https://www.google.com",
-       "cancel_url":"https://www.yahoo.com"
-    }
+    ]
  }
  
 }
