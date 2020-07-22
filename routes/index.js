@@ -19,8 +19,11 @@ router.get('/success', function(req, res, next) {
   res.render('success', { title: 'Express' });
 });
 
-router.get('/usview', function(req, res, next) {
-  res.render('indexus', { title: 'Express' });
+router.get('/advanced_cards', function(req, res, next) {
+  generateClientToken(function(response) {
+    console.log(response && response.client_token)
+    res.render('advance_cards', { title: 'Advanced cards', clientToken: response.client_token });  
+  })
 });
 
 router.get('/cards', function(req, res, next) {
@@ -109,6 +112,27 @@ function createPaymentPayload(amount) {
     ]
  }
  
+}
+
+
+function generateClientToken(cb){
+  getAccessToken(function(tokenResp){
+    let acccessToken = JSON.parse(tokenResp).access_token;
+    var options = {
+      'method': 'POST',
+      'url': config.url+'/v1/identity/generate-token/',
+      'headers': {
+        'Authorization': 'Bearer '+acccessToken,
+        'Content-Type': 'application/json'
+      }
+    };
+    request(options, function (error, response) {
+      if (error) throw new Error(error);
+      console.log(response)
+      cb(JSON.parse(response.body));
+    });
+    
+  });
 }
 
 module.exports = router;

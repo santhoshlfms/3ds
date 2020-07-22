@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>3DS CHECK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensures optimal rendering on mobile devices. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- Optimal Internet Explorer compatibility -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/jquery.toast.min.css' />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://www.paypal.com/sdk/js?components=hosted-fields,buttons&client-id=AU38yVtT7uX_FPZgOvWXdIIewAFGP_K2DSvi6cfjyyg3pxgjKMGFABRX5bKSxV_FJbDcNG4XCFcyQimX&currency=USD&buyer-country=GB&intent=capture&locale=en_US" 
+    data-client-token = <%= clientToken %>
+    ></script> 
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="/javascripts/jquery.toast.min.js"></script>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col">
+        <div class="card" style="width: 25rem;">
+          <img class="card-img-top" src="/images/choco.jpg" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Chocolate</h5>
+            <p class="card-text">Mario store chocolates. Buy Them Now !!</p>
+    
+            <div class="card_container">
+              <form id="my-sample-form">
+         
+                <label for="card-number">Card Number</label><div id="card-number" class="card_field form-group"></div>
+                <div>
+                  <label for="expiration-date">Expiration Date</label><div id="expiration-date" class="card_field form-group"></div>
+                </div>
+                <div>
+                  <label for="cvv">CVV</label><div id="cvv" class="card_field form-group"></div>
+                </div>
+                <label for="card-holder-name">Name on Card</label><input type="text" class="form-control" id="card-holder-name" name="card-holder-name" autocomplete="off" placeholder="card holder name" value="Santhosh"/>
+                <div>
+                  <label for="card-billing-address-street">Billing Address</label><input type="text" class="form-control" id="card-billing-address-street" name="card-billing-address-street" autocomplete="off" placeholder="street address" value="North First Street"/>
+                </div>
+                <div>
+                  <label for="card-billing-address-unit">&nbsp;</label><input type="text" class="form-control" id="card-billing-address-unit" name="card-billing-address-unit" autocomplete="off" placeholder="unit" value="San Jose"/>
+                </div>
+                <div>
+                  <input type="text" class="form-control" id="card-billing-address-city" name="card-billing-address-city" autocomplete="off" placeholder="city" value="San Jose"/>
+                </div>
+                <div>
+                  <input type="text" class="form-control" id="card-billing-address-state" name="card-billing-address-state" autocomplete="off" placeholder="state" value="San Jose"/>
+                </div>
+                <div>
+                  <input type="text" class="form-control" id="card-billing-address-zip" name="card-billing-address-zip" autocomplete="off" placeholder="zip / postal code" value="2211"/>
+                </div>
+                <div>
+                  <input type="text" class="form-control" id="card-billing-address-country" name="card-billing-address-country" autocomplete="off" placeholder="country code"  value="US"/>
+                </div>
+                <br><br>
+                <button value="submit" id="submit" class="btn btn-secondary">Pay</button>
+    
+                <div id="payments-sdk__contingency-lightbox"></div>
+              </form>
+            </div>
+            <div id="paypal-button-container"></div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col">
+        <div class="row">
+          <p>To Test 3DS use the following cards below </p>
+           <div class="row">
+             <div>Positive use case</div>
+             <p>Mastercard : 5200000000000007</p>
+             <p>Exp Date : 01/***</p>
+             <p>Expected results : Enrolled = Y</p>
+           </div>
+
+           <div class="row">
+            <div>Negative use case</div>
+            <p>Mastercard : 5200000000000015</p>
+            <p>Exp Date : 01/***</p>
+            <p>Expected results : Enrolled = Y</p>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+   
+
+    <div class="row">
+      <div class="col">
+        <p>Advanced credit and debit country and currecy matrix</p>
+        <p><a href="https://developer.paypal.com/docs/business/checkout/reference/currency-availability-advanced-cards/">Advanced credit and debit country and currency availability</a></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+       <p> Step 1 :  To use advance credit card complete the setup in the follwoing link <a href="https://www.sandbox.paypal.com/bizsignup">Biz signup</a></p>
+       <p>Step 2: Add components=hosted-fields,buttons in script</p>
+       <p>Step 3: Generate client token <a href="https://developer.paypal.com/docs/business/checkout/advanced-card-payments/#step-2-generate-a-client-token-for-your-buyer">Client token</a></p>
+        <p>Step 4: Optional style guide <a href="https://developer.paypal.com/docs/business/checkout/reference/style-guide/">Style</a></p>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col">
+       <p> Enable 3DS</p>
+       <p>Step 1: Include a contingency for 3D Secure </p>
+       <p>Step 2: Add contingencies key in paylaod => contingencies: ['3D_SECURE']</p>
+       <p>Step 4: Optional style guide <a href="https://developer.paypal.com/docs/business/checkout/reference/style-guide/">Style</a></p>
+       <p>Step 5: 3DS test cards <a href="https://cardinaldocs.atlassian.net/wiki/spaces/CCen/pages/400654355/3DS+1.0+Test+Cases">https://cardinaldocs.atlassian.net/wiki/spaces/CCen/pages/400654355/3DS+1.0+Test+Cases</a></p>
+      </div>
+    </div>
+  
+    <script>
+      $('#my-sample-form').hide();
+      paypal
+      .Buttons({
+        // Specify the style of the button
+        style: {
+          layout: "vertical",
+          shape: "rect", // pill | rect
+          color: "gold", // gold | blue | silve | black
+          label: "pay" // checkout | pay | paypal
+        },
+        createOrder: function(data, actions) {
+          console.log("Creating Order");
+          return fetch("/create-payments", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+             
+            })
+          })
+          .then(res => res.json())
+          .then(res => {
+            res = JSON.parse(res);
+            if(!res.id)
+              console.log(JSON.stringify(res, null, 4));
+            else
+              console.log("Order Id : "+ res.id)
+            return res.id;
+          })
+         
+        },
+        onApprove: function(data, actions) {
+          // Get the transaction details
+          return fetch("/capture-order?orderId="+data.orderID,{
+            method: 'POST',
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+            
+            })
+          })
+          .then(res => res.json())
+          .then(res => {
+              if(!res.id) {
+                  console.log(JSON.stringify(res,null,4));
+              }
+              let respFromServer = JSON.parse(res);
+              console.log(respFromServer)
+              console.log("Payment Successful")
+              if(respFromServer.status == "COMPLETED") {
+                $.toast({
+                  heading: 'Success',
+                  text: 'Payment Succecssful',
+                  showHideTransition: 'slide',
+                  icon: 'success'
+                })
+                setTimeout(function(){document.location.href = "/success"},500);
+              }else {
+
+              }
+            
+              //return res;
+          })
+        
+        },
+        onCancel : function(err) {
+          console.log("You cancelled the operation","error");
+          return  alert("You cancelled the operation");
+        },
+        onError: function(err) {
+          console.log("Some error occurred " + err);
+          console.log("ERROR - "+err.message,"error");
+          alert(
+            "Some Error Occurred . Please open console to see the error " +
+              JSON.stringify(err)
+          );
+        },
+        onInit: function(data, actions) {
+          console.log("PayPal Button Loaded");  
+        }
+      })
+      .render("#paypal-button-container")
+      .catch(err => {
+        console.log("errrrrror ", err);
+     })
+
+     setTimeout(function(){
+        if (paypal.HostedFields.isEligible()) {
+          $('#my-sample-form').show();
+          paypal.HostedFields.render({
+            createOrder: function () {        
+              return fetch("/create-payments", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+               
+              })
+            })
+            .then(res => res.json())
+            .then(res => {
+              res = JSON.parse(res);
+              if(!res.id)
+                console.log(JSON.stringify(res, null, 4));
+              else
+                console.log("Order Id : "+ res.id)
+              return res.id;
+            })},
+            fields: {
+              number: {
+                selector: '#card-number',
+                placeholder: 'card number',
+                prefill: "4493573935388639"
+              },
+              cvv: {
+                selector: '#cvv',
+                placeholder: 'card security number',
+                prefill:'742'
+              },
+              expirationDate: {
+                selector: '#expiration-date',
+                placeholder: 'mm/yy',
+                prefill:'11/22'
+              }
+            }
+          }).then(function (hf) {
+            $('#my-sample-form').submit(function (event) {
+              event.preventDefault();
+              hf.submit({
+                contingencies: ['3D_SECURE'],
+                cardholderName: document.getElementById('card-holder-name').value,
+                billingAddress: {
+                  streetAddress: document.getElementById('card-billing-address-street').value,      // address_line_1 - street
+                  extendedAddress: document.getElementById('card-billing-address-unit').value,       // address_line_2 - unit
+                  region: document.getElementById('card-billing-address-state').value,           // admin_area_1 - state
+                  locality: document.getElementById('card-billing-address-city').value,          // admin_area_2 - town / city
+                  postalCode: document.getElementById('card-billing-address-zip').value,           // postal_code - postal_code
+                  countryCodeAlpha2: document.getElementById('card-billing-address-country').value   // country_code - country
+                }
+              }).then(function(payload){
+                    console.log(payload);
+                    let orderId = payload.orderId;
+
+                  console.log(payload)
+                  if (payload.liabilityShift === 'possible') {
+                    console.log("payload.liabilityShift === possible")
+                    if(orderId) {
+                      $.post( "/capture-order?orderId="+orderId, function( data ) {
+                        console.log(data)
+                        data = JSON.parse(data);
+                        if(data.status == "COMPLETED") {
+                          alert("Payment processed")
+                        }
+                      });
+                    }
+                  }
+  
+                  if (payload.liabilityShift) {
+                    console.log("payload.liabilityShift")
+                  }
+                    
+                    
+                  });
+                });
+              });
+        }else {
+            $('#my-sample-form').hide(); 
+        }
+     },5000);
+    
+     
+
+    </script>
+  </body>
+</html>
