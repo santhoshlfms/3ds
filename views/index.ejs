@@ -57,6 +57,7 @@
          
         },
         onApprove: function(data, actions) {
+        console.log('Hi onarrove')
           // Get the transaction details
           return fetch("/capture-order?orderId="+data.orderID,{
             method: 'POST',
