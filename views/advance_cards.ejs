@@ -11,6 +11,7 @@
     <script src="https://www.paypal.com/sdk/js?components=hosted-fields,buttons&client-id=AU38yVtT7uX_FPZgOvWXdIIewAFGP_K2DSvi6cfjyyg3pxgjKMGFABRX5bKSxV_FJbDcNG4XCFcyQimX&currency=USD&buyer-country=GB&intent=capture&locale=en_US" 
     data-client-token = <%= clientToken %>
     ></script> 
+
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="/javascripts/jquery.toast.min.js"></script>
   </head>
@@ -263,23 +264,57 @@
                     console.log(payload);
                     let orderId = payload.orderId;
 
-                  console.log(payload)
-                  if (payload.liabilityShift === 'possible') {
-                    console.log("payload.liabilityShift === possible")
-                    if(orderId) {
-                      $.post( "/capture-order?orderId="+orderId, function( data ) {
-                        console.log(data)
-                        data = JSON.parse(data);
-                        if(data.status == "COMPLETED") {
-                          alert("Payment processed")
+                    // new 3ds req
+                    fetch('get-order-details?orderId='+orderId, {
+                      method: 'post',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                   
+                    }).then(resp=>resp.json())
+                      .then(resp => {
+                        
+                        let orderDetails = JSON.parse(resp)
+                        let LiabilityShift = orderDetails.payment_source.card.authentication_result.liability_shift 
+                        let AuthenticationResult = orderDetails.payment_source.card.authentication_result.three_d_secure.authentication_status 
+                        let EnrollmentStatus = orderDetails.payment_source.card.authentication_result.three_d_secure.enrollment_status
+
+                        LiabilityShift = LiabilityShift ? LiabilityShift.toUpperCase() : undefined;
+                        AuthenticationResult = AuthenticationResult ? AuthenticationResult.toUpperCase() : undefined;
+                        EnrollmentStatus = EnrollmentStatus ? EnrollmentStatus.toUpperCase() : undefined;
+                        let capturePayment = false;
+
+                        if(LiabilityShift === 'POSSIBLE' && AuthenticationResult === 'Y' && EnrollmentStatus === 'Y') {
+                          capturePayment = true;
+                        }
+                        if(LiabilityShift === 'POSSIBLE' && AuthenticationResult === 'A' && EnrollmentStatus === 'Y') {
+                          capturePayment = true;
+                        }
+                        if(LiabilityShift === 'NO' && AuthenticationResult === undefined && EnrollmentStatus === 'N') {
+                          capturePayment = true;
+                        }
+                        if(LiabilityShift === 'NO' && AuthenticationResult === undefined && EnrollmentStatus === 'U') {
+                          capturePayment = true;
+                        }
+                        if(LiabilityShift === 'NO' && AuthenticationResult === undefined && EnrollmentStatus === 'B') {
+                          capturePayment = true;
+                        }
+                        debugger
+                        if (capturePayment) {
+                          console.log("capturePayment")
+                          if(orderId) {
+                            $.post( "/capture-order?orderId="+orderId, function( data ) {
+                              data = JSON.parse(data);
+                              if(data.status == "COMPLETED") {
+                                alert("Payment proccessed")
+                              }
+                            });
+                          }
+                        }else {
+                          alert("Auth failed in card")
                         }
                       });
-                    }
-                  }
-  
-                  if (payload.liabilityShift) {
-                    console.log("payload.liabilityShift")
-                  }
+
                     
                     
                   });
