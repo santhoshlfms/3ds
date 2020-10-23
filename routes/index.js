@@ -51,7 +51,7 @@ router.get('/advanced_cards', function(req, res, next) {
 });
 
 router.get('/cards', function(req, res, next) {
-  res.render('test', { title: 'Express' });
+  res.render('credit_cards', { title: 'Express' });
 });
 
 
@@ -184,7 +184,7 @@ function createPaymentPayload(amount) {
        {
          
           "amount":{
-             "currency_code":"USD",
+             "currency_code":"INR",
              "value":amount
           }
        }

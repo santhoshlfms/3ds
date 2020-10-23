@@ -260,17 +260,12 @@
     </div>
 
     <script>
-        var i = 0;
-
-       // var shippingObj = getInlineGuestShippingDetails("DE");
        var FUNDING_SOURCES = [
             paypal.FUNDING.CARD,
             paypal.FUNDING.PAYPAL,
         ];
-        
-
+     
         FUNDING_SOURCES.forEach(function (fundingSource) {
-
             // Initialize the buttons
             var button = paypal.Buttons({
                 fundingSource: fundingSource,
