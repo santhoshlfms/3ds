@@ -13,9 +13,8 @@ var router = express.Router();
  //
 //
 let config = {
- 
-  clientId: 'Aa_h6z8ib3U69GzYw23SKuG-1g_PSNJouUp2bGdd-pD5xiMCsrcUV_xg5njOBKdvlc-LyLBx8oqEfhZ5',
-  secret:'ECieAQqRDYFSnrpuRRCOzVogt1nRJAMUIolOGfsWaJpVp-LBEiOYT-ReC97yLy4CCKs1dAJDu5fnBZLl',
+  clientId: 'AU38yVtT7uX_FPZgOvWXdIIewAFGP_K2DSvi6cfjyyg3pxgjKMGFABRX5bKSxV_FJbDcNG4XCFcyQimX',
+  secret:'EEq7udV_b-1NacvOQ_HXhWGdpiNdU6KfhZiHuXQqDfgw5ag5ex-zFwFzyOb6SNM41klRqqRvZ21d8X7x',
   email: 'merchant-us-san@pp.com',
   url:'https://api.sandbox.paypal.com'
 }
@@ -184,7 +183,7 @@ function createPaymentPayload(amount) {
        {
          
           "amount":{
-             "currency_code":"INR",
+             "currency_code":"USD",
              "value":amount
           }
        }

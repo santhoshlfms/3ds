@@ -8,7 +8,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/jquery.toast.min.css' />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://www.paypal.com/sdk/js?components=hosted-fields,buttons&client-id=AU38yVtT7uX_FPZgOvWXdIIewAFGP_K2DSvi6cfjyyg3pxgjKMGFABRX5bKSxV_FJbDcNG4XCFcyQimX&currency=USD&buyer-country=GB&intent=capture&locale=en_US" 
+    <script src="https://www.paypal.com/sdk/js?components=hosted-fields,buttons&client-id=AdKMv_n2isOtb_QNSR4QEbO6CirDuRiAMJse4HEZTr5E5GE-L3Utg3cEcFhxADm-apr-_rX8z4IufFBD&currency=USD&buyer-country=GB&intent=capture&locale=en_US" 
     data-client-token = <%= clientToken %>
     ></script> 
 
@@ -247,8 +247,35 @@
               }
             }
           }).then(function (hf) {
+
+
+            hf.on('validityChange', function (event) {
+              var field = event.fields[event.emittedBy];
+
+              if (field.isValid) {
+                console.log(event.emittedBy, 'is fully valid');
+              } else if (field.isPotentiallyValid) {
+                console.log(event.emittedBy, 'is potentially valid');
+              } else {
+                console.log(event.emittedBy, 'is not valid');
+              }
+
+              var state = hf.getState();
+              var formValid = Object.keys(state.fields).every(function (key) {
+                return state.fields[key].isValid;
+              });
+              if (formValid) {
+                // enable submit button
+                $("#submit").attr('disabled' , false);
+              } else {
+                // disable submit button
+                $("#submit").attr('disabled' , true);
+              }
+            });
+            
             $('#my-sample-form').submit(function (event) {
               event.preventDefault();
+              debugger
               hf.submit({
                 contingencies: ['3D_SECURE'],
                 cardholderName: document.getElementById('card-holder-name').value,
