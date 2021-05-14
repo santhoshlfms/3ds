@@ -84,7 +84,10 @@
                   showHideTransition: 'slide',
                   icon: 'success'
                 })
-                setTimeout(function(){document.location.href = "/success"},500);
+                if(confirm("Payment Succecssful ! Do u want to continue?")) {
+                  document.location.href = "/success"
+                }           
+                
               }else {
 
               }
