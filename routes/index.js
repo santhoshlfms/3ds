@@ -13,20 +13,12 @@ var router = express.Router();
  //
 //
 let config = {
-  clientId: 'AU38yVtT7uX_FPZgOvWXdIIewAFGP_K2DSvi6cfjyyg3pxgjKMGFABRX5bKSxV_FJbDcNG4XCFcyQimX',
-  secret:'EEq7udV_b-1NacvOQ_HXhWGdpiNdU6KfhZiHuXQqDfgw5ag5ex-zFwFzyOb6SNM41klRqqRvZ21d8X7x',
+  clientId: 'AZaYyzkzdpoNudMiDSwMNlGck9MEy5ufiFz5QKfgZkKWvwhPe5PobRY_tybgy5Pau9bbRZbQoxqw2GMc',
+  secret:'EED02t6KClDtBAvfhY699KFXUJbvEZGY9NMjfCVbIvs2nI4SOmRisOMVUeDs34Ljz85OcLSNitx1-xPn',
   email: 'merchant-us-san@pp.com',
-  url:'https://api.sandbox.paypal.com'
+  url:'https://api.paypal.com'
 }
 
-
-let config1 = {
- 
-  clientId: 'AdKMv_n2isOtb_QNSR4QEbO6CirDuRiAMJse4HEZTr5E5GE-L3Utg3cEcFhxADm-apr-_rX8z4IufFBD',
-  secret:'EAPCWsOxv7zuH6vCFj6pXwgV6CeeGV5PgkAXufO32tkHX4usbEMt5F1x6zgRDzawbjm3hMBof0g0Rxgv',
-  email: 'partner-us-san@pp.com',
-  url:'https://api.sandbox.paypal.com'
-}
 
 
 /* GET home page. */
@@ -36,6 +28,10 @@ router.get('/', function(req, res, next) {
 
 router.get('/msp', function(req, res, next) {
   res.render('msp', { title: 'Express' });
+});
+
+router.get('/acdc', function(req, res, next) {
+  res.render('acdc', { title: 'Express' });
 });
 
 router.get('/success', function(req, res, next) {
@@ -55,7 +51,7 @@ router.get('/cards', function(req, res, next) {
 
 
 router.post('/create-payments', function(req, res, next) {
-  let amount = 10.00;
+  let amount = 0.10;
   getAccessToken(function(tokenResp){
     let acccessToken = JSON.parse(tokenResp).access_token
     let payload = createPaymentPayload(amount);
@@ -170,7 +166,7 @@ function getAccessToken(cb) {
   };
   request(options, function (error, response) {
     if (error) throw new Error(error);
-   
+    console.log(JSON.stringify(response.body))
     cb(response.body);
   });
 }
@@ -179,12 +175,15 @@ function getAccessToken(cb) {
 function createPaymentPayload(amount) {
   return {
     "intent":"CAPTURE",
+    "application_context": {"shipping_preference": "NO_SHIPPING"},
     "purchase_units":[
        {
-         
           "amount":{
              "currency_code":"USD",
              "value":amount
+          },
+          "payee": {
+            "email_address": "hktim.pp@gmail.com"
           }
        }
     ]
@@ -202,7 +201,8 @@ function generateClientToken(cb){
       'headers': {
         'Authorization': 'Bearer '+acccessToken,
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({"customer_id": "MURUSANTHOSHTEST1"})
     };
     request(options, function (error, response) {
       if (error) throw new Error(error);

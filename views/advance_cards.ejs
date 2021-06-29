@@ -8,12 +8,12 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/jquery.toast.min.css' />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://www.paypal.com/sdk/js?components=hosted-fields,buttons&client-id=AdKMv_n2isOtb_QNSR4QEbO6CirDuRiAMJse4HEZTr5E5GE-L3Utg3cEcFhxADm-apr-_rX8z4IufFBD&currency=USD&buyer-country=GB&intent=capture&locale=en_US" 
+    <script src="https://www.paypal.com/sdk/js?components=hosted-fields,buttons&client-id=AZaYyzkzdpoNudMiDSwMNlGck9MEy5ufiFz5QKfgZkKWvwhPe5PobRY_tybgy5Pau9bbRZbQoxqw2GMc&merchant-id=M9B3ZCH8SM6EY" 
     data-client-token = <%= clientToken %>
-    ></script> 
+    </script> 
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="/javascripts/jquery.toast.min.js"></script>
+
   </head>
   <body>
     <div class="row">
@@ -27,7 +27,9 @@
             <div class="card_container">
               <form id="my-sample-form">
          
-                <label for="card-number">Card Number</label><div id="card-number" class="card_field form-group"></div>
+                <label for="card-number">Card Number</label><div id="card-number" class="card_field form-group">
+                  <span id="ccnotvalid"></span>
+                </div>
                 <div>
                   <label for="expiration-date">Expiration Date</label><div id="expiration-date" class="card_field form-group"></div>
                 </div>
@@ -113,9 +115,11 @@
        <p>Step 5: 3DS test cards <a href="https://cardinaldocs.atlassian.net/wiki/spaces/CCen/pages/400654355/3DS+1.0+Test+Cases">https://cardinaldocs.atlassian.net/wiki/spaces/CCen/pages/400654355/3DS+1.0+Test+Cases</a></p>
       </div>
     </div>
-  
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script>
+      $(document).ready(function () {
       $('#my-sample-form').hide();
+      let fundingsource = ""
       paypal
       .Buttons({
         // Specify the style of the button
@@ -127,6 +131,7 @@
         },
         createOrder: function(data, actions) {
           console.log("Creating Order");
+          debugger
           return fetch("/create-payments", {
             method: "POST",
             headers: {
@@ -140,6 +145,7 @@
           .then(res => res.json())
           .then(res => {
             res = JSON.parse(res);
+            console.log("res Order");
             if(!res.id)
               console.log(JSON.stringify(res, null, 4));
             else
@@ -147,6 +153,9 @@
             return res.id;
           })
          
+        },
+        onClick: function(data, action ) {
+          debugger
         },
         onApprove: function(data, actions) {
           // Get the transaction details
@@ -206,6 +215,7 @@
      })
 
      setTimeout(function(){
+       debugger
         if (paypal.HostedFields.isEligible()) {
           $('#my-sample-form').show();
           paypal.HostedFields.render({
@@ -258,7 +268,11 @@
                 console.log(event.emittedBy, 'is potentially valid');
               } else {
                 console.log(event.emittedBy, 'is not valid');
+                //$("#ccnotvalid").text("Card not valid")
+            
               }
+
+              
 
               var state = hf.getState();
               var formValid = Object.keys(state.fields).every(function (key) {
@@ -278,15 +292,16 @@
               debugger
               hf.submit({
                 contingencies: ['3D_SECURE'],
+              
                 cardholderName: document.getElementById('card-holder-name').value,
-                billingAddress: {
+              /*  billingAddress: {
                   streetAddress: document.getElementById('card-billing-address-street').value,      // address_line_1 - street
                   extendedAddress: document.getElementById('card-billing-address-unit').value,       // address_line_2 - unit
                   region: document.getElementById('card-billing-address-state').value,           // admin_area_1 - state
                   locality: document.getElementById('card-billing-address-city').value,          // admin_area_2 - town / city
                   postalCode: document.getElementById('card-billing-address-zip').value,           // postal_code - postal_code
                   countryCodeAlpha2: document.getElementById('card-billing-address-country').value   // country_code - country
-                }
+                }*/
               }).then(function(payload){
                     console.log(payload);
                     let orderId = payload.orderId;
@@ -302,15 +317,17 @@
                       .then(resp => {
                         
                         let orderDetails = JSON.parse(resp)
-                        let LiabilityShift = orderDetails.payment_source.card.authentication_result.liability_shift 
-                        let AuthenticationResult = orderDetails.payment_source.card.authentication_result.three_d_secure.authentication_status 
-                        let EnrollmentStatus = orderDetails.payment_source.card.authentication_result.three_d_secure.enrollment_status
+                        console.log(orderDetails)
+                        let capturePayment = false;
+                        debugger
+                        let LiabilityShift = orderDetails.payment_source.card.authentication_result?.liability_shift || "undefined"
+                        let AuthenticationResult = orderDetails.payment_source.card.authentication_result?.three_d_secure.authentication_status 
+                        let EnrollmentStatus = orderDetails.payment_source.card.authentication_result?.three_d_secure.enrollment_status
 
                         LiabilityShift = LiabilityShift ? LiabilityShift.toUpperCase() : undefined;
                         AuthenticationResult = AuthenticationResult ? AuthenticationResult.toUpperCase() : undefined;
                         EnrollmentStatus = EnrollmentStatus ? EnrollmentStatus.toUpperCase() : undefined;
-                        let capturePayment = false;
-
+                     
                         if(LiabilityShift === 'POSSIBLE' && AuthenticationResult === 'Y' && EnrollmentStatus === 'Y') {
                           capturePayment = true;
                         }
@@ -326,7 +343,7 @@
                         if(LiabilityShift === 'NO' && AuthenticationResult === undefined && EnrollmentStatus === 'B') {
                           capturePayment = true;
                         }
-                        debugger
+                        
                         if (capturePayment) {
                           console.log("capturePayment")
                           if(orderId) {
@@ -339,12 +356,17 @@
                           }
                         }else {
                           alert("Auth failed in card")
+                          if(orderId) {
+                            $.post( "/capture-order?orderId="+orderId, function( data ) {
+                              data = JSON.parse(data);
+                              if(data.status == "COMPLETED") {
+                                alert("Payment proccessed")
+                              }
+                            });
+                          }
                         }
                       });
-
-                    
-                    
-                  });
+                    });
                 });
               });
         }else {
@@ -353,7 +375,7 @@
      },5000);
     
      
-
+    });
     </script>
   </body>
 </html>
