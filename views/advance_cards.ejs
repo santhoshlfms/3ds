@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+views/advance_cards.ejs<!DOCTYPE html>
 <html>
   <head>
     <title>3DS CHECK</title>
@@ -155,7 +155,7 @@
          
         },
         onClick: function(data, action ) {
-          debugger
+          
         },
         onApprove: function(data, actions) {
           // Get the transaction details
@@ -215,7 +215,7 @@
      })
 
      setTimeout(function(){
-       debugger
+       
         if (paypal.HostedFields.isEligible()) {
           $('#my-sample-form').show();
           paypal.HostedFields.render({
@@ -289,10 +289,9 @@
             
             $('#my-sample-form').submit(function (event) {
               event.preventDefault();
-              debugger
-              hf.submit({
-                contingencies: ['3D_SECURE'],
               
+              hf.submit({
+                
                 cardholderName: document.getElementById('card-holder-name').value,
               /*  billingAddress: {
                   streetAddress: document.getElementById('card-billing-address-street').value,      // address_line_1 - street
