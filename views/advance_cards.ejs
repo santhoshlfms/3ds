@@ -131,7 +131,7 @@ views/advance_cards.ejs<!DOCTYPE html>
         },
         createOrder: function(data, actions) {
           console.log("Creating Order");
-          debugger
+          
           return fetch("/create-payments", {
             method: "POST",
             headers: {
@@ -291,16 +291,17 @@ views/advance_cards.ejs<!DOCTYPE html>
               event.preventDefault();
               
               hf.submit({
-                
+                contingencies: ['3D_SECURE'],
+
                 cardholderName: document.getElementById('card-holder-name').value,
-              /*  billingAddress: {
+               billingAddress: {
                   streetAddress: document.getElementById('card-billing-address-street').value,      // address_line_1 - street
                   extendedAddress: document.getElementById('card-billing-address-unit').value,       // address_line_2 - unit
                   region: document.getElementById('card-billing-address-state').value,           // admin_area_1 - state
                   locality: document.getElementById('card-billing-address-city').value,          // admin_area_2 - town / city
                   postalCode: document.getElementById('card-billing-address-zip').value,           // postal_code - postal_code
                   countryCodeAlpha2: document.getElementById('card-billing-address-country').value   // country_code - country
-                }*/
+                }
               }).then(function(payload){
                     console.log(payload);
                     let orderId = payload.orderId;
@@ -318,7 +319,7 @@ views/advance_cards.ejs<!DOCTYPE html>
                         let orderDetails = JSON.parse(resp)
                         console.log(orderDetails)
                         let capturePayment = false;
-                        debugger
+                        
                         let LiabilityShift = orderDetails.payment_source.card.authentication_result?.liability_shift || "undefined"
                         let AuthenticationResult = orderDetails.payment_source.card.authentication_result?.three_d_secure.authentication_status 
                         let EnrollmentStatus = orderDetails.payment_source.card.authentication_result?.three_d_secure.enrollment_status
