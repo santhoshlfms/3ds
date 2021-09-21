@@ -31,7 +31,12 @@ router.get('/msp', function(req, res, next) {
 });
 
 router.get('/acdc', function(req, res, next) {
-  res.render('acdc', { title: 'Express' });
+  generateClientToken(function(response) {
+     console.log(response && response.client_token)
+    
+     res.render('acdc', { title: 'Advanced cards', clientToken: response.client_token });  
+   })
+ 
 });
 
 router.get('/success', function(req, res, next) {
@@ -47,6 +52,12 @@ router.get('/advanced_cards', function(req, res, next) {
 
 router.get('/cards', function(req, res, next) {
   res.render('credit_cards', { title: 'Express' });
+});
+
+router.post('/seller-server/login-seller', function(req, res, next) {
+  console.log("seller-server/login-seller --- muru")
+  console.log(req.body)
+  res.json({status: "ok"});
 });
 
 
